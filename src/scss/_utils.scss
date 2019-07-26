@@ -1,0 +1,28 @@
+@import "../scss/_vars.scss";
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60%;
+
+  @include desktop {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+
+    @include tablet-portrait {
+      flex-direction: row;
+      width: 20%;
+      justify-content: space-between;
+    }
+
+    @include desktop {
+      width: auto;
+    }
+  }
+}
