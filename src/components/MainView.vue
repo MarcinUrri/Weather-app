@@ -1,9 +1,15 @@
 <template>
   <section>
-    <city-select 
+    <city-select
       :cityList="cityList" 
-      @city-to-display="cityToDisplay($event)" />
+      @city-to-display="displayCityWeather($event)" />
+      <div v-if="loading" class="spinner">
+        <div class="spinner__inner">
+          <div></div><div></div><div></div><div></div>
+        </div>
+      </div>
     <weather-information 
+      v-if="selectedCity !== ''" 
       :selectedCity="selectedCity" 
       :cityWeatherInformation="cityWeatherInformations" />
   </section>
@@ -20,36 +26,38 @@ export default {
     CitySelect,
     WeatherInformation
   },
-  props: {
-    msg: String
-  },
   data() {
     return {
       selectedCity: '',
       cityList: [],
       cityWeatherInformations: [],
+      loading: false
     }
   },
   methods: {
-    cityToDisplay(cityName) {
-      this.selectedCity = cityName
-      const currentDate = new Date().toJSON().slice(0,10)
-      const city = this.cityList.find(city => city.name === cityName)
-      HTTP.get(`${city.id}/weather?date=${currentDate}`).then(response => {
-        this.cityWeatherInformations = response.data
-      }).catch(e => {
-        console.log(e)
-      })
+    displayCityWeather(cityName) {
+      if (cityName !== this.selectedCity) { //Prvent loading data for the same city
+        this.loading = true
+        this.selectedCity = cityName
+        const currentDate = new Date().toJSON().slice(0,10)
+        const city = this.cityList.find(city => city.name === cityName)
+        HTTP.get(`${city.id}/weather?date=${currentDate}`)
+        .then(response => {
+          this.loading = false
+          this.cityWeatherInformations = response.data
+        }).catch(err => {
+          this.loading = false
+          this.cityWeatherInformations = `There was an error${err}, please try again`
+        })
+      }
     }
   },
   created() {
     HTTP.get().then(response => {
       this.cityList = response.data
-    }).catch(e => {
-      console.log(e)
+    }).catch(err => {
+      this.cityList = `There was an error, please try refreshing the page. ${err}`
     })
   }
 }
 </script>
-<style scoped lang="scss">
-</style>

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <main-view msg="Welcome to Your Vue.js App"/>
+    <main-view/>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Arial', Helvetica, 'Avenir', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

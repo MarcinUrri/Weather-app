@@ -1,14 +1,16 @@
 <template>
 <section>
-    <ul class="main-list">
-      <single-day 
-        v-for="(day, index) in cityWeatherInformation" 
-        :key="index" 
-        :index="index"
-        :singleDayInformations="day"
-        :formattedDate="formattedDate[index]" />
-    </ul>
+  <span class="error" v-if="!checkWeatherData">{{cityWeatherInformation}}</span>
+  <ul v-else class="main-list">
+    <single-day 
+    v-for="(day, index) in cityWeatherInformation" 
+    :key="index" 
+    :index="index"
+    :singleDayInformations="day"
+    :formattedDate="formattedDate[index]" />
+  </ul>
 </section>
+
 </template>
 
 <script>
@@ -22,18 +24,23 @@ export default {
   },
   props: {
     cityWeatherInformation: {
-      type: Array,
+      type: [Array, String],
       default: [],
       required: true
     },
     selectedCity: {
       type: String,
-      default: 'Select a city to display weather',
+      default: 'Select city...',
       required: true
   }},
   data() {
     return {
       formattedDate: []
+    }
+  },
+  computed: {
+    checkWeatherData() {
+      return typeof this.cityWeatherInformation === 'string' ? false : true
     }
   },
   watch: {
@@ -63,10 +70,13 @@ export default {
   display: flex;
   flex-direction: column;
   list-style-type: none;
-  margin: 0 10px;
+  margin: 25px 10px 0 10px;
   font-size: 18px;
   font-weight: 500;
-  margin-top: 40px;
+
+  @include tablet-portrait {
+    margin: 50px 10px 0 10px;
+  }
 
   @include desktop {
     flex-direction: row;

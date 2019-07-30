@@ -1,8 +1,12 @@
 <template>
   <section class="drop-down" @click="this.showDropDown">
-    <span>{{cityToDisplay === '' ? 'Select city....' : cityToDisplay}}</span>
-    <div :class="[{'drop-down__inner--active': dropDown}, 'drop-down__inner']">
-      <div class="drop-down__item" @mouseover="selectCityHover(city.name)" @click="selectCityToDisplay(city.name)" v-for="city in cityList" :key="city.id" >
+    <span v-if="checkCityData">{{cityToDisplay === '' ? 'Select city....' : cityToDisplay}}</span>
+    <span class="drop-down__error" v-if="!checkCityData">{{cityList}}</span>
+    <div v-else :class="[{'drop-down__inner--active': dropDown}, 'drop-down__inner']">
+      <div class="drop-down__item" 
+        @mouseover="selectCityHover(city.name)" 
+        @click="selectCityToDisplay(city.name)" 
+        v-for="city in cityList" :key="city.id" >
         {{city.name}}
       </div>
     </div>
@@ -14,7 +18,7 @@ import {HTTP} from '@/utils/http-common.js'
 export default {
   name: 'city-select',
   props: {
-    cityList: Array,
+    cityList: [Array, String],
     default: [],
     required: true
   },
@@ -35,6 +39,11 @@ export default {
     selectCityHover(city) {
       this.cityToDisplay = city
     }
+  },
+  computed: {
+    checkCityData() {
+      return typeof this.cityList === 'string' ? false : true
+    }
   }
 }
 </script>
@@ -43,19 +52,24 @@ export default {
   font-size: 28px;
   font-weight: 500;
   background: #fff;
+  text-align: left;
   border: none;
   color: $dark-grey;
   cursor: pointer;
+  padding-top: 10px;
   position: fixed;
   top: 0;
-  width: 100%;
-
+  left: 10px;
+  width: calc(100% -  20px);
+  @include tablet-portrait {
+    width: 35%;
+    font-size: 42px;
+  }
 
   &__inner {
     max-height: 0px;
     transition: max-height 0.3s ease-out;
     overflow: hidden;
-
 
     &--active {
       max-height: 1000px;
@@ -73,6 +87,10 @@ export default {
     &:first-child {
       border-top: 2px solid $light-grey;
     }
+  }
+
+  &__error {
+    color: $main-red;
   }
 }
 </style>
